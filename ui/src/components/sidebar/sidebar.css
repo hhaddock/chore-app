@@ -1,0 +1,23 @@
+@font-face {
+    font-family: Beckan;
+    src: url("/src/assets/font/Beckan.otf");
+}
+
+hr {
+    width: 85%;
+}
+
+.sidebar {
+  flex: 0 0 25vw;
+  height:100vh;
+  width:25vw;
+  background:#a9a9a9;
+}
+
+.title {
+    font-family: Beckan;
+    font-size: 48px;
+    padding: 0px 20px;
+    margin: 10px;
+    text-align: center;
+}
