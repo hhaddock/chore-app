@@ -4,16 +4,16 @@ import com.atlas.menter.dto.LoginDto;
 import com.atlas.menter.dto.UserCreateDto;
 import com.atlas.menter.entity.User;
 import com.atlas.menter.service.impl.UserServiceImpl;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.core.RepositoryCreationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 @RestController
 public class UserController {
@@ -43,12 +43,18 @@ public class UserController {
 
     @PostMapping(value = "/api/signin")
     public ResponseEntity<Object> authenticateUser(@RequestBody LoginDto login){
-        String token = userService.authenticateUser(login);
+        HashMap<String, Object> userAuth = userService.authenticateUser(login);
+        String token = userAuth.get("token").toString();
 
-        System.out.println("TOKEN: " + token.toString());
+        System.out.println("TOKEN: " + token);
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
-        ResponseEntity entity = new ResponseEntity(headers, HttpStatus.OK);
+        headers.add("Access-Control-Expose-Headers", "Authorization");
+        ResponseEntity entity = new ResponseEntity(
+                userAuth.get("user_details"),
+                headers,
+                HttpStatus.OK
+        );
 
         return entity;
     }

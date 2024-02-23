@@ -6,10 +6,10 @@ import com.atlas.menter.entity.Role;
 import com.atlas.menter.entity.User;
 import com.atlas.menter.repository.RoleRepository;
 import com.atlas.menter.repository.UserRepository;
+import com.atlas.menter.response.AuthenticateUserReponse;
 import com.atlas.menter.security.TokenManager;
 import com.atlas.menter.security.UserDetailsServiceImpl;
 import com.atlas.menter.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -41,19 +42,38 @@ public class UserServiceImpl implements UserService {
     TokenManager tokenManager;
 
     @Override
-    public String authenticateUser(LoginDto login) {
+    public HashMap<String, Object> authenticateUser(LoginDto login) {
         try{
-            System.out.println("LOGIN DTO" + " USERNAME: " + login.getUsernameOrEmail() + " PASS: " + login.getPassword());
+
+            String authUserName = null;
+            if(login.getUsername() != null) {
+                authUserName = login.getUsername();
+            } else if(login.getUsername() == null && login.getEmail() != null) {
+                authUserName = login.getEmail();
+            }
+
+            System.out.println("LOGIN DTO" + " USERNAME: " + authUserName + " PASS: " + login.getPassword());
+
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    login.getUsernameOrEmail(), login.getPassword()
+                    authUserName, login.getPassword()
             ));
+
             SecurityContext securityContext = SecurityContextHolder.getContext();
             securityContext.setAuthentication(auth);
 
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getUsernameOrEmail());
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(authUserName);
             final String jwtToken = tokenManager.generateJwtToken(userDetails);
 
-            return jwtToken;
+            AuthenticateUserReponse userReponse = new AuthenticateUserReponse();
+            userReponse.username = login.getUsername();
+            userReponse.email = login.getEmail();
+            userReponse.roles = userDetails.getAuthorities();
+
+            HashMap<String, Object> details = new HashMap<>();
+            details.put("token", jwtToken);
+            details.put("user_details", userReponse);
+
+            return details;
         } catch (AuthenticationException ex) {
             System.out.println("ERROR LOADING AUTH: ");
             System.out.println(ex.getMessage());

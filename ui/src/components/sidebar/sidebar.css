@@ -8,9 +8,9 @@ hr {
 }
 
 .sidebar {
-  flex: 0 0 25vw;
+  flex: 0 0 20em;
   height:100vh;
-  width:25vw;
+  width:20em;
   background:#a9a9a9;
 }
 
@@ -20,4 +20,24 @@ hr {
     padding: 0px 20px;
     margin: 10px;
     text-align: center;
+}
+
+@media only screen and (max-width: 768px) {
+    .sidebar {
+        transition: all 0.5s ease-out allow-discrete;
+        flex: 0 0 4em;
+        height:100vh;
+        width:4em;
+        background:#a9a9a9;
+      }   
+}
+
+@media only screen and (min-width: 768px) {
+    .sidebar {
+        transition: all 0.5s ease-out allow-discrete;
+        flex: 0 0 20em;
+        height:100vh;
+        width:20em;
+        background:#a9a9a9;
+      }   
 }

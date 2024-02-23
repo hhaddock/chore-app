@@ -5,6 +5,8 @@ import com.atlas.menter.dto.UserCreateDto;
 import com.atlas.menter.entity.Recipe;
 import com.atlas.menter.entity.User;
 
+import java.util.HashMap;
+
 public interface UserService {
 
     public abstract User createUser(UserCreateDto user);
@@ -14,5 +16,5 @@ public interface UserService {
 
     public abstract User getUserById(Long id);
 
-    public abstract String authenticateUser(LoginDto login);
+    public abstract HashMap<String, Object> authenticateUser(LoginDto login);
 }
