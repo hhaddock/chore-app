@@ -16,8 +16,8 @@ const userSlice = createSlice({
             console.log("ACTION RECIEVED: ");
             console.log(action.type)
             state.user.username = action.payload?.username;
-            var test : string[] = action.payload.role;
-            
+            state.user.email = action.payload?.email;
+            state.user.roles = action.payload?.roles;
         },
         logoutUser: (state, action) => {
             state.user.username = '';

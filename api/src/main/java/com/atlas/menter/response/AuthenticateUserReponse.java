@@ -1,14 +1,15 @@
 package com.atlas.menter.response;
 
 import com.atlas.menter.entity.Role;
-import org.springframework.security.core.GrantedAuthority;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import java.util.Set;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+@Data
+@AllArgsConstructor
 public class AuthenticateUserReponse {
     public String username;
     public String email;
-    public Collection<? extends GrantedAuthority> roles;
+    public Set<Role> roles;
     public boolean enabled;
 }

@@ -39,8 +39,6 @@ export const LoginComponent: FunctionComponent = ({
     )
 
     function clickHandler() {
-        console.log(username);
-        console.log(password);
         var payload = {
             "username": username,
             "password": password

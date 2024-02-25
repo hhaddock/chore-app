@@ -42,38 +42,21 @@ public class UserServiceImpl implements UserService {
     TokenManager tokenManager;
 
     @Override
-    public HashMap<String, Object> authenticateUser(LoginDto login) {
+    public String authenticateUser(LoginDto login) {
         try{
-
-            String authUserName = null;
-            if(login.getUsername() != null) {
-                authUserName = login.getUsername();
-            } else if(login.getUsername() == null && login.getEmail() != null) {
-                authUserName = login.getEmail();
-            }
-
-            System.out.println("LOGIN DTO" + " USERNAME: " + authUserName + " PASS: " + login.getPassword());
+            System.out.println("LOGIN DTO" + " USERNAME: " + login.getUsername() + " PASS: " + login.getPassword());
 
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    authUserName, login.getPassword()
+                    login.getUsername(), login.getPassword()
             ));
 
             SecurityContext securityContext = SecurityContextHolder.getContext();
             securityContext.setAuthentication(auth);
 
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(authUserName);
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(login.getUsername());
             final String jwtToken = tokenManager.generateJwtToken(userDetails);
 
-            AuthenticateUserReponse userReponse = new AuthenticateUserReponse();
-            userReponse.username = login.getUsername();
-            userReponse.email = login.getEmail();
-            userReponse.roles = userDetails.getAuthorities();
-
-            HashMap<String, Object> details = new HashMap<>();
-            details.put("token", jwtToken);
-            details.put("user_details", userReponse);
-
-            return details;
+            return jwtToken;
         } catch (AuthenticationException ex) {
             System.out.println("ERROR LOADING AUTH: ");
             System.out.println(ex.getMessage());
@@ -119,5 +102,15 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         return user.get();
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return null;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return null;
     }
 }

@@ -3,6 +3,7 @@ package com.atlas.menter.controller;
 import com.atlas.menter.dto.LoginDto;
 import com.atlas.menter.dto.UserCreateDto;
 import com.atlas.menter.entity.User;
+import com.atlas.menter.response.AuthenticateUserReponse;
 import com.atlas.menter.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,11 @@ import org.springframework.data.repository.core.RepositoryCreationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 @RestController
@@ -43,15 +46,27 @@ public class UserController {
 
     @PostMapping(value = "/api/signin")
     public ResponseEntity<Object> authenticateUser(@RequestBody LoginDto login){
-        HashMap<String, Object> userAuth = userService.authenticateUser(login);
-        String token = userAuth.get("token").toString();
+        String jwtToken = userService.authenticateUser(login);
 
-        System.out.println("TOKEN: " + token);
+        if(jwtToken == null) { // could not authenticate user
+
+        }
+//        User authenticatedUser = userService.getUserByUsername(login.getUsername());
+
+//        AuthenticateUserReponse response = new AuthenticateUserReponse(
+//            authenticatedUser.getUsername(),
+//            authenticatedUser.getEmail(),
+//            authenticatedUser.getRoles(),
+//            authenticatedUser.isEnabled()
+//        );
+
+        System.out.println("TOKEN: " + jwtToken);
+
         MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
+        headers.add("Authorization", "Bearer " + jwtToken);
         headers.add("Access-Control-Expose-Headers", "Authorization");
         ResponseEntity entity = new ResponseEntity(
-                userAuth.get("user_details"),
+                new HashMap<>(),
                 headers,
                 HttpStatus.OK
         );
