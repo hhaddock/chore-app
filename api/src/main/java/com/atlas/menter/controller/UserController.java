@@ -49,16 +49,24 @@ public class UserController {
         String jwtToken = userService.authenticateUser(login);
 
         if(jwtToken == null) { // could not authenticate user
+            ResponseEntity entity = new ResponseEntity(
+                    new HashMap<>(),
+                    HttpStatus.UNAUTHORIZED
+            );
 
+            return entity;
         }
-//        User authenticatedUser = userService.getUserByUsername(login.getUsername());
 
-//        AuthenticateUserReponse response = new AuthenticateUserReponse(
-//            authenticatedUser.getUsername(),
-//            authenticatedUser.getEmail(),
-//            authenticatedUser.getRoles(),
-//            authenticatedUser.isEnabled()
-//        );
+        User authenticatedUser = userService.getUserByUsername(login.getUsername());
+        System.out.println(authenticatedUser.getUsername());
+        System.out.println(authenticatedUser.getEmail());
+        System.out.println(authenticatedUser.getPassword());
+
+        AuthenticateUserReponse response = new AuthenticateUserReponse();
+        response.username = authenticatedUser.getUsername();
+        response.email = authenticatedUser.getEmail();
+        response.roles = authenticatedUser.getRoles();
+        response.enabled = authenticatedUser.isEnabled();
 
         System.out.println("TOKEN: " + jwtToken);
 
@@ -66,7 +74,7 @@ public class UserController {
         headers.add("Authorization", "Bearer " + jwtToken);
         headers.add("Access-Control-Expose-Headers", "Authorization");
         ResponseEntity entity = new ResponseEntity(
-                new HashMap<>(),
+                response,
                 headers,
                 HttpStatus.OK
         );

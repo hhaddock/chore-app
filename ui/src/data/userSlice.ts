@@ -13,8 +13,6 @@ const userSlice = createSlice({
     initialState: initialState,
     reducers: {
         authenticateUser: (state, action) => {
-            console.log("ACTION RECIEVED: ");
-            console.log(action.type)
             state.user.username = action.payload?.username;
             state.user.email = action.payload?.email;
             state.user.roles = action.payload?.roles;

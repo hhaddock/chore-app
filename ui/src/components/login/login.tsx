@@ -18,7 +18,7 @@ export const LoginComponent: FunctionComponent = ({
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
-    const user = useSelector((state: IRootState) => state);
+    const user = useSelector((state: IRootState) => state.user);
 
     console.log(user);
     return(
@@ -30,11 +30,14 @@ export const LoginComponent: FunctionComponent = ({
                     <br/>
                 </>
             }
-
-            <input id='username' type='text' placeholder='username' onChange={event => setUsername(event.target.value)} value={username} /><br />
-            <input type='password' placeholder='password'  onChange={event => setPassword(event.target.value)} value={password} /><br />
-
-            <button onClick={clickHandler}>Submit</button>
+            <br />
+            <form>
+                <input id='username' type='text' placeholder='username' onChange={event => setUsername(event.target.value)} value={username} /><br />
+                <br />
+                <input type='password' placeholder='password'  onChange={event => setPassword(event.target.value)} value={password} /><br />
+                <br />
+                <button type="button" onClick={clickHandler}>Submit</button>
+            </form>
         </div>
     )
 
@@ -51,12 +54,17 @@ export const LoginComponent: FunctionComponent = ({
         })
         .then((response: any) => {
             if(response.headers.hasAuthorization){
+                let authHeader = response.headers.authorization;
+                const access_token = authHeader.split(/(\s+)/)[2];
+                console.log(access_token);
+                console.log(response.data);
+
                 dispatch(authenticateUser(response.data));
-                setCookie('access_token', response.headers.authorization)
-                navigate('/admin');
+                setCookie('access_token', access_token)
+                navigate('/profile');
             }
           }, (error) => {
-            console.log(error);
+            console.log(error);;
             setError("Forking error");
         });
     }

@@ -1,5 +1,12 @@
+import { Profile as ProfileComponent } from "../../components/profile/profile";
+
 const Profile = () => {
-    return <h1>profile</h1>;
-  };
+    return (
+      <div>
+        <h1>Profile</h1>
+        <ProfileComponent />
+      </div>
+    )
+};
   
 export default Profile;

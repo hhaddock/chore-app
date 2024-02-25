@@ -1,12 +1,16 @@
 import { LoginComponent } from "../../components/login/login";
+import './login.css';
 
 const Login = () => {
-    return <>
-        <div>
+    return (
+        <>
             <h1>Login</h1>
-            <LoginComponent />
-        </div>
-    </>
+            <div className="content-container">
+                <LoginComponent />
+            </div>
+        </>
+    )
+
   };
   
 export default Login;
